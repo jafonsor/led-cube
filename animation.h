@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "collection.h"
 
 typedef struct {
 public:
@@ -85,28 +86,27 @@ public:
 
 class AnimationManager {
   const static int _max_anims = 20;
-  Animation * _anims[_max_anims];
-  int _nAnims = 0;
+  Collection<Animation*> _anims;
   Frame _frame;
 public:
+  AnimationManager(): _anims(_max_anims) {}
+  
   void runAnimations() {
-    for(int i = 0; i < _nAnims; i++) {
-      _anims[i]->setUpFrame(_frame);
+    Iterator<Animation*> *it = _anims.iterator();
+    Animation * currentAnim;
+    while(it->hasNext()) {
+      currentAnim = it->next();
+      currentAnim->setUpFrame(_frame);
       do {
         _frame.render();
-        _anims[i]->updateFrame(_frame);
-      } while(!_anims[i]->finished());
+        currentAnim->updateFrame(_frame);
+      } while(!currentAnim->finished());
     }
+    delete it;
   }
   
   bool addAnim(Animation * animation) {
-    if(_nAnims < _max_anims) {
-      _anims[_nAnims] = animation;
-      _nAnims++;
-      return true;
-    } else {
-      return false;
-    }
+    return _anims.add(animation);
   }
 };
 
@@ -262,3 +262,38 @@ public:
     frame.on(x,y,z);
   }
 };
+
+class AnimSeq : public Animation {
+  Collection<Animation*> * _anims;
+  Iterator<Animation*> * _it = 0;
+  Animation * _currentAnim;
+public:
+  AnimSeq(Collection<Animation*> * collection) :
+    _anims(collection) {}
+  
+  ~AnimSeq() {
+    delete _anims;
+  }
+  
+  void setUpFrame(Frame & frame) {
+    if(_it != 0)
+      delete _it;
+    _it = _anims->iterator();
+    _currentAnim = _it->next();
+    _currentAnim->setUpFrame(frame);
+  }
+  
+  void updateFrame(Frame & frame) {
+    if(_currentAnim->finished()) {
+      _currentAnim = _it->next();  
+      _currentAnim->setUpFrame(frame);
+    } else {
+      _currentAnim->updateFrame(frame);
+    }
+  }
+  
+  bool finished() {
+    return !_it->hasNext();
+  }
+};
+

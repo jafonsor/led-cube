@@ -22,9 +22,14 @@ void setup() {
   Serial.begin(9600);
   Serial.println("hello");
   
+  Collection<Animation*> * blinks =  new Collection<Animation*>(2);
+  blinks->add(new AllOnAnim(500));
+  blinks->add(new AllOffAnim(250));
+  
+  Animation * blinkAnim = new RepeatAnim(5, new AnimSeq(blinks));
+  
+  animManager.addAnim(blinkAnim);
   animManager.addAnim(new RepeatAnim(30, new RandomMoveAnim(200)));
-  animManager.addAnim(new AllOnAnim(500));
-  animManager.addAnim(new AllOffAnim(250));
 }
 
 /** /
