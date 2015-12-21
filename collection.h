@@ -21,15 +21,16 @@ public:
     delete[] _items;
   }
   
-  Item & operator[](int i) {
+  
+  inline Item operator[](int i) {
     return _items[i];
   }
   
-  Item & get(int i) {
+  inline Item get(int i) {
     return _items[i];
   }
   
-  int nElems() { return _nElems; }
+  inline int nElems() { return _nElems; }
   
   bool add(Item item) {
     if(_nElems < _max_elems) {
@@ -49,13 +50,13 @@ public:
       _collection(collection) {}
 
     Item next() {
-      if(_index < _collection._max_elems)
+      if(_index < _collection.nElems())
         _index++;
       return _collection[_index-1];
     }
     
     bool hasNext() {
-      return _index < _collection._max_elems;
+      return _index < _collection.nElems();
     }
   };
   

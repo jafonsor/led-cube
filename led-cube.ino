@@ -1,7 +1,6 @@
 #include "animation.h"
 
-
-AnimationManager animManager;
+AnimationManager manager;
 
 void setup() {
   pinMode( 2,OUTPUT);
@@ -19,17 +18,15 @@ void setup() {
   for(int i = 2; i <= 13; i++) {
     digitalWrite(i,LOW);
   }
-  Serial.begin(9600);
-  Serial.println("hello");
   
-  Collection<Animation*> * blinks =  new Collection<Animation*>(2);
-  blinks->add(new AllOnAnim(500));
-  blinks->add(new AllOffAnim(250));
+  AnimSeq * blinkSeq = new AnimSeq(2);
+  blinkSeq->addAnim(new AllOnAnim(250));
+  blinkSeq->addAnim(new AllOffAnim(250));
   
-  Animation * blinkAnim = new RepeatAnim(5, new AnimSeq(blinks));
+  RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
-  animManager.addAnim(blinkAnim);
-  animManager.addAnim(new RepeatAnim(30, new RandomMoveAnim(200)));
+  manager.addAnim(blinkAnim);
+  manager.addAnim(new RandMoveAnim(200,16));
 }
 
 /** /
@@ -38,6 +35,8 @@ void loop() {
 }
 /**/
 void loop() {
-  animManager.runAnimations();
+  while(true) {
+    manager.runAnimations();
+  }
 }
 /**/
