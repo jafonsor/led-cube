@@ -1,7 +1,48 @@
-class RandomMovement {
-  int _x, _y, _z;
+#include "cube.h" // Position
+
+class Movement {
+protected:
+  Position _pos;
   int _currentDir;
   
+public:
+  Movement(): _pos(0,0,0) {}
+  Movement(int x, int y, int z, int dir) :
+    _pos(x,y,z),
+    _currentDir(dir) {}
+  
+  void setDir(int dir) {
+     _currentDir = dir; 
+  }
+  
+  void moveAhead() {
+    _pos.moveOnDir(_currentDir);
+  }
+  
+  void set(int x, int y, int z, int dir) {
+    _pos.x = x; _pos.y = y; _pos.z = z;
+    _currentDir = dir;
+  }
+  
+  void set(Position & pos, int dir) {
+    _pos = pos;
+    _currentDir = dir;
+  }
+  
+  void getPosition(Position & pos) {
+    pos = _pos;
+  }
+  
+  Position & getPosition() {
+    return _pos;
+  }
+  
+  void setPosition(Position & pos) {
+    _pos = pos;
+  }
+};
+
+class RandomMovement : public Movement {
   int randomDir() {
     return random(0,6);
   }
@@ -28,43 +69,24 @@ class RandomMovement {
       case 5: return 4;
     }
   }
-  
-  void moveOnDir(int & x, int & y, int & z, int dir) {
-    switch(dir) {
-      case 0: x--; break;
-      case 1: x++; break;
-      case 2: y--; break;
-      case 3: y++; break;
-      case 4: z--; break;
-      case 5: z++; break;
-    }
-  }
-  
-  bool outSideCube(int x, int y, int z) {
-    return x < 0 || x > 2 || y < 0 || y > 2 || z < 0 || z > 2;
-  }
 public:
   RandomMovement(int seed) {
     randomSeed(seed);
     _currentDir = randomDir();
-    _x = randomPos();
-    _y = randomPos();
-    _z = randomPos();
+    _pos.x = randomPos();
+    _pos.y = randomPos();
+    _pos.z = randomPos();
   }
   
-  void getPosition(int & x, int & y, int & z) {
-    x = _x; y = _y; z = _z;
-  }
-  
-  void move() {
-    int x, y, z;
+  void moveRandom() {
+    Position newPos;
     int newDir;
     do {
       newDir = randomNewDir();
-      x = _x; y = _y; z = _z;
-      moveOnDir(x,y,z, newDir);
-    } while(outSideCube(x,y,z));
-    _x = x; _y = y; _z = z;
+      newPos = _pos;
+      newPos.moveOnDir(newDir);
+    } while(newPos.outsideCube());
+    _pos = newPos;
     _currentDir = newDir;
   }
 };

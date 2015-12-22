@@ -1,4 +1,46 @@
+#ifndef CUBE_H
+#define CUBE_H
+
 #include <Arduino.h> // digitalWrite, delay, delayMicroseconds
+
+struct Position;
+typedef struct Position Position;
+
+struct Position {
+  int x,y,z;
+public:
+  Position() {}
+  Position(int xi, int yi, int zi) {
+   x = xi; y = yi; z = zi;
+  } 
+
+  void readTo(int & xIn, int & yIn, int & zIn) {
+    xIn = x; yIn = y; zIn = z;
+  }
+  
+  void readTo(Position & p) {
+    p.x = x; p.y = y; p.z = z;
+  }
+  
+  bool outsideCube() {
+    return x < 0 || x > 2 || y < 0 || y > 2 || z < 0 || z > 2;
+  }
+  
+  void moveOnDir(int dir) {
+    switch(dir) {
+      case 0: x--; break;
+      case 1: x++; break;
+      case 2: y--; break;
+      case 3: y++; break;
+      case 4: z--; break;
+      case 5: z++; break;
+    }
+  }
+};
+
+bool operator==(const Position & p1, const Position & p2) {
+  return p1.x == p2.x && p1.y == p2.y && p1.z == p2.z;
+}
 
 class Cube {
   bool _leds[3][9];
@@ -16,7 +58,8 @@ class Cube {
   }
   
   void set(int x, int y, int z, bool val) {
-    led(x,y,z) = val;
+    if(!outsideCube(x,y,z))
+      led(x,y,z) = val;
   } 
   
 public:
@@ -55,8 +98,16 @@ public:
     set(x,y,z, true); 
   }
   
+  void on(Position & pos) {
+    on(pos.x, pos.y, pos.z);
+  }
+  
   void off(int x, int y, int z) {
     set(x,y,z, false);
+  }
+  
+  void off(Position & pos) {
+    off(pos.x, pos.y, pos.z);
   }
   
   bool isOn(int x, int y, int z) {
@@ -66,4 +117,10 @@ public:
   void allOn()  { setAll(true); }
   void allOff() { setAll(false); }
   
+  static bool outsideCube(int x, int y, int z) {
+    return x < 0 || x > 2 || y < 0 || y > 2 || z < 0 || z > 2;
+  }
+  
 };
+
+#endif

@@ -22,12 +22,16 @@ public:
   }
   
   
-  inline Item operator[](int i) {
+  inline Item & operator[](int i) {
     return _items[i];
   }
   
-  inline Item get(int i) {
+  inline Item & get(int i) {
     return _items[i];
+  }
+  
+  inline void set(int i, Item & item) {
+    _items[i] = item;
   }
   
   inline int nElems() { return _nElems; }
@@ -62,7 +66,6 @@ public:
   
   Iterator<Item> * iterator() {
     return new CollectionIterator(*this);
-  }
-    
+  } 
 };
 

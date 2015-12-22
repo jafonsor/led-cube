@@ -25,8 +25,10 @@ void setup() {
   
   RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
-  manager.addAnim(blinkAnim);
-  manager.addAnim(new RandMoveAnim(200,16));
+  manager.addAnim(new SnakeAnim(70, 3, 10));
+  //manager.addAnim(new ArestaMov(300));
+  //manager.addAnim(blinkAnim);
+  //manager.addAnim(new RandMoveAnim(200,16));
 }
 
 /** /
