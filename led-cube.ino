@@ -2,6 +2,8 @@
 
 AnimationManager manager;
 
+RandomMovement snakeMovement(9090);
+
 void setup() {
   pinMode( 2,OUTPUT);
   pinMode( 3,OUTPUT);
@@ -25,7 +27,7 @@ void setup() {
   
   RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
-  manager.addAnim(new SnakeAnim(70, 3, 10));
+  manager.addAnim(new SnakeAnim(&snakeMovement, 70, 4, 10));
   //manager.addAnim(new ArestaMov(300));
   //manager.addAnim(blinkAnim);
   //manager.addAnim(new RandMoveAnim(200,16));

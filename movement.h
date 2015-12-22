@@ -40,8 +40,14 @@ public:
   void setPosition(Position & pos) {
     _pos = pos;
   }
+  
+  virtual void move() {
+    moveAhead();
+  }
 };
 
+
+// Moves on a random direction inside the cube.
 class RandomMovement : public Movement {
   int randomDir() {
     return random(0,6);
@@ -88,5 +94,10 @@ public:
     } while(newPos.outsideCube());
     _pos = newPos;
     _currentDir = newDir;
+  }
+  
+  //Override
+  void move() {
+    moveRandom();
   }
 };

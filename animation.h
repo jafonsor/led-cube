@@ -187,7 +187,7 @@ class SnakeIterator {
 class SnakeAnim : public Animation, public WithDuration {
   const int _size;
   Collection<Position> _positions;
-  RandomMovement _movement;
+  Movement * _movement;
   const int _cicles;
    
   bool insideBody(Position & pos) {
@@ -201,17 +201,17 @@ class SnakeAnim : public Animation, public WithDuration {
   }
   
 public:
-  SnakeAnim(int duration, int size, int cicles):
+  SnakeAnim(Movement * movement, int duration, int size, int cicles):
     WithDuration(duration),
     _size(size),
     _positions(_size),
-    _movement(9090),
+    _movement(movement),
     _cicles(cicles)
   {
-    _positions.add(_movement.getPosition());
+    _positions.add(_movement->getPosition());
     for (int i = 0; i < _size-1; i++) {
-      _movement.moveRandom();
-      _positions.add(_movement.getPosition());
+      _movement->move();
+      _positions.add(_movement->getPosition());
     }
   }
 
@@ -221,23 +221,16 @@ public:
       cube.on(_positions[i]);
     }
     
+    // saves the position of the snake for the next call
     static SnakeIterator<Position> it(&_positions);
+    
     Position newHead;
-    Position oldHead;
     for (int i = 0; i < _cicles; i++) {
       cube.render(duration());
-
-      // calculate new head outside body
-      _movement.getPosition(newHead);
-      /**/
-      _movement.moveRandom();
-      /** /
-      do {
-        _movement.setPosition(oldHead);
-        _movement.moveRandom();
-        _movement.getPosition(newHead);
-      } while(insideBody(newHead));     
-      /**/
+      
+      _movement->move();
+      _movement->getPosition(newHead);
+      
       cube.off(it.tail());
       cube.on(newHead);
 
