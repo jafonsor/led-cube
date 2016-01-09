@@ -86,28 +86,25 @@ class RepeatAnim : public Animation {
 };
 
 class MoveAnim : public Animation, public WithDuration {
-    Movement * _movement;
+    Movable * _movable;
     const int _num_of_steps;
   public:
-    MoveAnim(Movement * movement, int duration, int num_of_steps) :
+    MoveAnim(Movable * movable, int duration, int num_of_steps) :
       WithDuration(duration),
-      _movement(movement),
+      _movable(movable),
       _num_of_steps(num_of_steps) {}
 
     void animate(Cube & cube) {
-      Position pos;
       cube.allOff();
-
-      _movement->pos(pos);
-      cube.on(pos);
+      
+      cube.on(_movable->pos());
       cube.render(duration());
-      cube.off(pos);
+      cube.off(_movable->pos());
       for (int i = 0; i < _num_of_steps; i++) {
-        _movement->move();
-        _movement->pos(pos);
-        cube.on(pos);
+        _movable->move();
+        cube.on(_movable->pos());
         cube.render(duration());
-        cube.off(pos);
+        cube.off(_movable->pos());
       }
     }
 };
@@ -194,7 +191,7 @@ class SnakeIterator {
 class SnakeAnim : public Animation, public WithDuration {
     const int _size;
     Collection<Position> _positions;
-    Movement * _movement;
+    Movable * _movable;
     const int _cicles;
 
     bool insideBody(Position & pos) {
@@ -208,17 +205,17 @@ class SnakeAnim : public Animation, public WithDuration {
     }
 
   public:
-    SnakeAnim(Movement * movement, int duration, int size, int cicles):
+    SnakeAnim(Movable * movable, int duration, int size, int cicles):
       WithDuration(duration),
       _size(size),
       _positions(_size),
-      _movement(movement),
+      _movable(movable),
       _cicles(cicles)
     {
-      _positions.add(_movement->pos());
+      _positions.add(_movable->pos());
       for (int i = 0; i < _size - 1; i++) {
-        _movement->move();
-        _positions.add(_movement->pos());
+        _movable->move();
+        _positions.add(_movable->pos());
       }
     }
 
@@ -234,7 +231,7 @@ class SnakeAnim : public Animation, public WithDuration {
       for (int i = 0; i < _cicles; i++) {
         cube.render(duration());
 
-        _movement->move();
+        _movable->move();
         /** /
         Serial.print("snake head: (");
         Serial.print(_movement->pos().x);
@@ -245,10 +242,10 @@ class SnakeAnim : public Animation, public WithDuration {
         Serial.println(")");
         /**/
         cube.off(it.tail());
-        cube.on(_movement->pos());
+        cube.on(_movable->pos());
 
         it.next();
-        it.head(_movement->pos());
+        it.head(_movable->pos());
       }
     }
 };
@@ -305,26 +302,26 @@ public:
   }
 };
 
-
-
 class StepsAnim : public Animation, public WithDuration {
   XYMovement _top;
   XYMovement _midle;
   XYMovement _bottom;
+  int _laps;
 public:
-  StepsAnim(int duration) :
+  StepsAnim(int duration, int laps) :
     WithDuration(duration),
-    _top(2,0,0),
-    _midle(1,0,1),
-    _bottom(0,0,2) {}
+    _top(0,0),
+    _midle(1,1),
+    _bottom(2,2),
+    _laps(laps) {}
   
   void animate(Cube & cube) {
     cube.allOff();
     
-    for(int i = 0; i < 8; i++) {
-      //cube.on(_top.pos());
-      cube.on(_midle.pos());
-      //cube.on(_bottom.pos());
+    for(int i = 0; i < 8 * _laps; i++) {
+      cube.toggle(_top.pos());
+      cube.toggle(_midle.pos());
+      cube.toggle(_bottom.pos());
       cube.render(duration());
       _top.move();
       _midle.move();

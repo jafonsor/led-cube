@@ -65,6 +65,10 @@ class Cube {
       led(x,y,z) = val;
   } 
   
+  bool get(int x, int y, int z) {
+    return led(x,y,z);
+  }
+  
 public:
 
   void render(int duration) {
@@ -111,6 +115,10 @@ public:
   
   void off(Position & pos) {
     off(pos.x, pos.y, pos.z);
+  }
+  
+  void toggle(Position & pos) {
+    set(pos.x, pos.y, pos.z, !get(pos.x, pos.y, pos.z));
   }
   
   bool isOn(int x, int y, int z) {

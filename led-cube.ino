@@ -4,10 +4,10 @@ AnimationManager manager;
 
 RandomMovement snakeMovement(9090);
 RandomMovement moveAnimMove(6767);
-XYMovement planeMove;
+XYMovement planeMove(0,0);
 
 void setup() {
-  /** /
+  /**/
   Serial.begin(9600);
   Serial.println("hellow");
   /**/
@@ -28,19 +28,19 @@ void setup() {
   }
   
   AnimSeq * blinkSeq = new AnimSeq(2);
-  blinkSeq->addAnim(new AllOnAnim(250));
-  blinkSeq->addAnim(new AllOffAnim(250));
+  blinkSeq->addAnim(new AllOnAnim(200));
+  blinkSeq->addAnim(new AllOffAnim(200));
   
   RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
-  manager.addAnim(new SnakeAnim(&snakeMovement, 500, 3, 25));
-  //manager.addAnim(new ArestaMov(300));
-  //manager.addAnim(blinkAnim);
+  manager.addAnim(new SnakeAnim(&snakeMovement, 70, 4, 200));
+  manager.addAnim(new ArestaMov(300));
+  manager.addAnim(blinkAnim);
   //manager.addAnim(new AllOnAnim(250));
   //manager.addAnim(new MoveAnim(&moveAnimMove,100,16));
-  //manager.addAnim(new MoveAnim(&planeMove,300,300));
+  //manager.addAnim(new MoveAnim(&planeMove,300, 8));
   //manager.addAnim(new MoveTestAnim2(500));
-  //manager.addAnim(new StepsAnim(500));
+  manager.addAnim(new StepsAnim(100,2));
 }
 
 /** /

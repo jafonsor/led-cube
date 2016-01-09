@@ -1,7 +1,7 @@
 template<typename Item>
 class Iterator {
 public:
-  virtual Item next() = 0;
+  virtual Item & next() = 0;
   virtual bool hasNext() = 0;
 };
 
@@ -36,6 +36,8 @@ public:
   
   inline int nElems() { return _nElems; }
   
+  // Do not change this to reference!
+  // Otherwise the planar movements will not work.
   bool add(Item item) {
     if(_nElems < _max_elems) {
       _items[_nElems] = item;
@@ -53,7 +55,7 @@ public:
     CollectionIterator(Collection & collection):
       _collection(collection) {}
 
-    Item next() {
+    Item & next() {
       if(_index < _collection.nElems())
         _index++;
       return _collection[_index-1];
@@ -66,6 +68,31 @@ public:
   
   Iterator<Item> * iterator() {
     return new CollectionIterator(*this);
-  } 
+  }
+  
+  class CiclicalCollectionIterator : public Iterator<Item> {
+    int _index = 0;
+    Collection & _collection;
+  public:
+    CiclicalCollectionIterator(Collection & collection):
+      _collection(collection) {}
+    
+    Item & next() {
+      if(_index < _collection.nElems())
+        _index++;
+      else
+        _index = 1;
+      
+      return _collection[_index-1];
+    }
+    
+    bool hasNext() {
+      return true;
+    }
+  };
+  
+  Iterator<Item> * ciclicalIterator() {
+    return new CiclicalCollectionIterator(*this);
+  }
 };
 
