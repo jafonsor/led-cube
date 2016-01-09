@@ -35,12 +35,10 @@ public:
   }
   
   inline int nElems() { return _nElems; }
-  
-  // Do not change this to reference!
-  // Otherwise the planar movements will not work.
-  bool add(Item item) {
+
+  bool add(Item & item) {
     if(_nElems < _max_elems) {
-      _items[_nElems] = item;
+      _items[_nElems] = item; // copy
       _nElems++;
       return true;
     } else {

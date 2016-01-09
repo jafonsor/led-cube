@@ -63,10 +63,6 @@ class Cube {
   void set(int x, int y, int z, bool val) {
     if(!outsideCube(x,y,z))
       led(x,y,z) = val;
-  } 
-  
-  bool get(int x, int y, int z) {
-    return led(x,y,z);
   }
   
 public:
@@ -118,7 +114,7 @@ public:
   }
   
   void toggle(Position & pos) {
-    set(pos.x, pos.y, pos.z, !get(pos.x, pos.y, pos.z));
+    set(pos.x, pos.y, pos.z, !isOn(pos.x, pos.y, pos.z));
   }
   
   bool isOn(int x, int y, int z) {

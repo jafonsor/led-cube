@@ -143,8 +143,8 @@ public:
   }
 };
 
-// Moves on a random direction inside the cube.
 class RandomMovement : public Movement {
+protected:
   Direction randomDir() {
     return (Direction)random(0,6);
   }
@@ -170,6 +170,40 @@ public:
     _pos.z = randomPos();
   }
   
+  virtual void moveRandom() = 0;
+  
+  //Override
+  void move() {
+    moveRandom();
+  }
+};
+
+class RandomAllDirMovement : public RandomMovement {
+public:
+  RandomAllDirMovement(int seed):
+    RandomMovement(seed) {}
+  
+  // Override
+  void moveRandom() {
+    Position newPos;
+    Direction newDir;
+    do {
+      newDir = randomNewDir();
+      newPos = _pos;
+      newPos.moveOnDir(newDir);
+    } while(newPos.outsideCube());
+    _pos = newPos;
+    _dir = newDir;
+  }
+};
+
+// Moves on a random direction inside the cube.
+class RandomArestaMovement : public RandomMovement {
+public:
+  RandomArestaMovement(int seed):
+    RandomMovement(seed) {}
+  
+  // Override
   void moveRandom() {
     Position newPos(_pos);
     Direction newDir = _dir;
@@ -182,10 +216,5 @@ public:
     }
     _pos = newPos;
     _dir = newDir;
-  }
-  
-  //Override
-  void move() {
-    moveRandom();
   }
 };

@@ -2,8 +2,9 @@
 
 AnimationManager manager;
 
-RandomMovement snakeMovement(9090);
-RandomMovement moveAnimMove(6767);
+RandomAllDirMovement snakeMovement1(9090);
+RandomArestaMovement snakeMovement2(9898);
+RandomAllDirMovement moveAnimMove(6767);
 XYMovement planeMove(0,0);
 
 void setup() {
@@ -33,14 +34,11 @@ void setup() {
   
   RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
-  manager.addAnim(new SnakeAnim(&snakeMovement, 70, 4, 200));
-  //manager.addAnim(new ArestaMov(300));
-  //manager.addAnim(blinkAnim);
-  //manager.addAnim(new AllOnAnim(250));
-  //manager.addAnim(new MoveAnim(&moveAnimMove,100,16));
-  //manager.addAnim(new MoveAnim(&planeMove,300, 8));
-  //manager.addAnim(new MoveTestAnim2(500));
-  //manager.addAnim(new StepsAnim(100,2));
+  
+  manager.addAnim(new StepsAnim(100,2));
+  manager.addAnim(new SnakeAnim(&snakeMovement2, 70, 7, 100));
+  manager.addAnim(blinkAnim);
+  manager.addAnim(new SnakeAnim(&snakeMovement1, 70, 4, 100));
 }
 
 /** /

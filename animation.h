@@ -193,6 +193,7 @@ class SnakeAnim : public Animation, public WithDuration {
     Collection<Position> _positions;
     Movable * _movable;
     const int _cicles;
+    SnakeIterator<Position> _it;
 
     bool insideBody(Position & pos) {
       Iterator<Position> * it = _positions.iterator();
@@ -210,7 +211,8 @@ class SnakeAnim : public Animation, public WithDuration {
       _size(size),
       _positions(_size),
       _movable(movable),
-      _cicles(cicles)
+      _cicles(cicles),
+      _it(&_positions)
     {
       _positions.add(_movable->pos());
       for (int i = 0; i < _size - 1; i++) {
@@ -225,27 +227,16 @@ class SnakeAnim : public Animation, public WithDuration {
         cube.on(_positions[i]);
       }
 
-      // saves the position of the snake for the next call
-      static SnakeIterator<Position> it(&_positions);
-
       for (int i = 0; i < _cicles; i++) {
         cube.render(duration());
 
         _movable->move();
-        /** /
-        Serial.print("snake head: (");
-        Serial.print(_movement->pos().x);
-        Serial.print(",");
-        Serial.print(_movement->pos().y);
-        Serial.print(",");
-        Serial.print(_movement->pos().z);
-        Serial.println(")");
-        /**/
-        cube.off(it.tail());
+        
+        cube.off(_it.tail());
         cube.on(_movable->pos());
 
-        it.next();
-        it.head(_movable->pos());
+        _it.next();
+        _it.head(_movable->pos());
       }
     }
 };
