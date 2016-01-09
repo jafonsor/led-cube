@@ -3,82 +3,125 @@
 class Movement {
 protected:
   Position _pos;
-  int _currentDir;
+  Direction _dir;
+  
+  Direction oposedDir(Direction dir) {
+    switch(dir) {
+      case XMinus: return XPlus;
+      case XPlus:  return XMinus;
+      case YMinus: return YPlus;
+      case YPlus:  return YMinus;
+      case ZMinus: return ZPlus;
+      case ZPlus:  return ZMinus;
+    }
+  }
   
 public:
   Movement(): _pos(0,0,0) {}
-  Movement(int x, int y, int z, int dir) :
+  Movement(int x, int y, int z, Direction dir) :
     _pos(x,y,z),
-    _currentDir(dir) {}
+    _dir(dir) {}
   
-  void setDir(int dir) {
-     _currentDir = dir; 
+  void setDir(Direction dir) {
+    if(dir >= 0 && dir <= 5)
+     _dir = dir;
   }
+  
+  Direction setDir() { return _dir; }
   
   void moveAhead() {
-    _pos.moveOnDir(_currentDir);
+    Position testPos = _pos;
+    testPos.moveOnDir(_dir);
+    if(!testPos.outsideCube()) {
+      _pos = testPos;
+    }
   }
   
-  void set(int x, int y, int z, int dir) {
-    _pos.x = x; _pos.y = y; _pos.z = z;
-    _currentDir = dir;
+  void moveBackwards() {
+    Position testPos = _pos;
+    testPos.moveOnDir(oposedDir(_dir));
+    if(!testPos.outsideCube())
+      _pos = testPos;
   }
   
-  void set(Position & pos, int dir) {
-    _pos = pos;
-    _currentDir = dir;
+  void set(int x, int y, int z, Direction dir) {
+    Position testPos;
+    testPos.x = x; testPos.y = y; testPos.z = z;
+    if(!testPos.outsideCube())
+      _pos = testPos;
+    setDir(dir);
   }
   
-  void getPosition(Position & pos) {
-    pos = _pos;
+  void set(Position & pos, Direction dir) {
+    if(!pos.outsideCube())
+      _pos = pos;
+    setDir(dir);
   }
   
-  Position & getPosition() {
+  Position & pos() {
     return _pos;
   }
   
-  void setPosition(Position & pos) {
-    _pos = pos;
+  void pos(Position & pos) {
+    if(!pos.outsideCube())
+      _pos = pos;
   }
   
-  virtual void move() {
+  virtual void move() = 0;
+};
+
+class AheadMovement : public Movement {
+public:
+  AheadMovement(int x, int y, int z, Direction dir):
+    Movement(x,y,z,dir) {}
+  
+  void move() {
     moveAhead();
   }
 };
 
+class XYMovement : public Movement {
+  const Direction _dirSeq[4] = {XPlus,YPlus,XMinus,YMinus};
+  int _dirIndex = 0;
+public:
+  XYMovement(int x=0, int y=0, int z=0):
+    Movement(x,y,z,_dirSeq[_dirIndex]) {}
+  
+  void move() {
+    Position testPos(_pos);
+    testPos.moveOnDir(_dir);
+    if(testPos.outsideCube()) {
+      testPos = _pos;
+      _dirIndex = (_dirIndex + 1) % 4;
+      setDir(_dirSeq[_dirIndex]);
+      testPos.moveOnDir(_dir);
+    }
+    _pos = testPos;
+  }
+};
 
 // Moves on a random direction inside the cube.
 class RandomMovement : public Movement {
-  int randomDir() {
-    return random(0,6);
+  Direction randomDir() {
+    return (Direction)random(0,6);
   }
   
   int randomPos() {
     return random(0,3);
   }
   
-  int randomNewDir() {
-    int newDir = oposedDir(_currentDir);
-    while(newDir == oposedDir(_currentDir)) {
+  Direction randomNewDir() {
+    Direction newDir = oposedDir(_dir);
+    while(newDir == oposedDir(_dir)) {
       newDir = randomDir();
     }
     return newDir;
   }
   
-  int oposedDir(int dir) {
-    switch(dir) {
-      case 0: return 1;
-      case 1: return 0;
-      case 2: return 3;
-      case 3: return 2;
-      case 4: return 5;
-      case 5: return 4;
-    }
-  }
 public:
   RandomMovement(int seed) {
     randomSeed(seed);
-    _currentDir = randomDir();
+    _dir = randomDir();
     _pos.x = randomPos();
     _pos.y = randomPos();
     _pos.z = randomPos();
@@ -86,14 +129,14 @@ public:
   
   void moveRandom() {
     Position newPos;
-    int newDir;
+    Direction newDir;
     do {
       newDir = randomNewDir();
       newPos = _pos;
       newPos.moveOnDir(newDir);
     } while(newPos.outsideCube());
     _pos = newPos;
-    _currentDir = newDir;
+    _dir = newDir;
   }
   
   //Override

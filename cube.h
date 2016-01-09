@@ -3,6 +3,9 @@
 
 #include <Arduino.h> // digitalWrite, delay, delayMicroseconds
 
+
+enum Direction { XMinus, XPlus, YMinus, YPlus, ZMinus, ZPlus }; 
+
 struct Position;
 typedef struct Position Position;
 
@@ -26,14 +29,14 @@ public:
     return x < 0 || x > 2 || y < 0 || y > 2 || z < 0 || z > 2;
   }
   
-  void moveOnDir(int dir) {
+  void moveOnDir(Direction dir) {
     switch(dir) {
-      case 0: x--; break;
-      case 1: x++; break;
-      case 2: y--; break;
-      case 3: y++; break;
-      case 4: z--; break;
-      case 5: z++; break;
+      case XMinus: x--; break;
+      case XPlus:  x++; break;
+      case YMinus: y--; break;
+      case YPlus:  y++; break;
+      case ZMinus: z--; break;
+      case ZPlus:  z++; break;
     }
   }
 };
