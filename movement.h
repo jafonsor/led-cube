@@ -171,15 +171,15 @@ public:
   }
   
   void moveRandom() {
-    Position newPos;
-    Direction newDir;
-    
+    Position newPos(_pos);
+    Direction newDir = _dir;
+     
+    newPos.moveOnDir(newDir);
     while(newPos.outsideCube()) {
       newDir = randomNewDir();
       newPos = _pos;
       newPos.moveOnDir(newDir);
     }
-    
     _pos = newPos;
     _dir = newDir;
   }

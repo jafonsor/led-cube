@@ -34,13 +34,13 @@ void setup() {
   RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
   manager.addAnim(new SnakeAnim(&snakeMovement, 70, 4, 200));
-  manager.addAnim(new ArestaMov(300));
-  manager.addAnim(blinkAnim);
+  //manager.addAnim(new ArestaMov(300));
+  //manager.addAnim(blinkAnim);
   //manager.addAnim(new AllOnAnim(250));
   //manager.addAnim(new MoveAnim(&moveAnimMove,100,16));
   //manager.addAnim(new MoveAnim(&planeMove,300, 8));
   //manager.addAnim(new MoveTestAnim2(500));
-  manager.addAnim(new StepsAnim(100,2));
+  //manager.addAnim(new StepsAnim(100,2));
 }
 
 /** /
