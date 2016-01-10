@@ -90,16 +90,33 @@ public:
   }
 };
 
-class XYMovement : public Movable {
-  Collection<Position> _positions;
+class PosMovement : public Movable {
+  Collection<Position> *_positions;
   Iterator<Position> * _it;
+  Position *_currentPos;
+public:
+  PosMovement(Collection<Position> * positions):
+    _positions(positions),
+    _it(_positions->ciclicalIterator()),
+    _currentPos(&_it->next()) {}
+  
+  void move() {
+    _currentPos = &_it->next();
+  }
+  
+  Position & pos() {
+    return *_currentPos;
+  }
+};
+
+class XYMovement : public PosMovement {
+  Collection<Position> _positions;
   int _z;
-  Position _currentPos;
   
 public:
   XYMovement(int index, int z=0):
     _positions(8),
-    _it(_positions.ciclicalIterator()),
+    PosMovement(&_positions),
     _z(z)
   {
     // init the positions collection
@@ -124,27 +141,8 @@ public:
     _positions.add(auxPos);
     
     
-    _currentPos = _it->next();
     for(int i = 0; i < index; i++)
-      _currentPos = _it->next();
-  }
-  
-  void move() {
-    _currentPos = _it->next();
-    
-    /**/
-    Serial.print("(");
-    Serial.print(_currentPos.x);
-    Serial.print(",");
-    Serial.print(_currentPos.y);
-    Serial.print(",");
-    Serial.print(_currentPos.z);
-    Serial.println(")");
-    /**/
-  }
-  
-  Position & pos() {
-    return _currentPos;
+      move();
   }
 };
 

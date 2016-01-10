@@ -52,12 +52,12 @@ void setup() {
   movesAnimMovables->add(&randMove4);
   
   
-  //manager.addAnim(new StepsAnim(100,2));
+  manager.addAnim(new StepsAnim(100,2));
   //manager.addAnim(new SnakeAnim(&snakeMovement2, 70, 7, 100));
   //manager.addAnim(blinkAnim);
   //manager.addAnim(new SnakeAnim(&snakeMovement1, 70, 4, 100));
   //manager.addAnim(blinkAnim);
-  manager.addAnim(new MovesAnim(movesAnimMovables, 200, 10));
+  //manager.addAnim(new MovesAnim(movesAnimMovables, 200, 10));
 }
 
 /** /
