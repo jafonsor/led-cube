@@ -11,6 +11,9 @@ RandomAllDirMovement randMove1(2323);
 RandomAllDirMovement randMove2(2424);
 RandomAllDirMovement randMove3(9527);
 RandomAllDirMovement randMove4(7);
+RandomAllDirMovement randMove5(99);
+
+FirstToLastMove ftlmove;
 
 void setup() {
   /**/
@@ -41,23 +44,25 @@ void setup() {
   
   
 
-  Collection<Movable*> * movesAnimMovables = new Collection<Movable*>(4);
+  Collection<Movable*> * movesAnimMovables = new Collection<Movable*>(5);
   randMove1.pos(1,1,1);
   randMove2.pos(1,1,1);
   randMove3.pos(1,1,1);
   randMove4.pos(1,1,1);
+  randMove5.pos(1,1,1);
   movesAnimMovables->add(&randMove1);
   movesAnimMovables->add(&randMove2);
   movesAnimMovables->add(&randMove3);
   movesAnimMovables->add(&randMove4);
+  movesAnimMovables->add(&randMove5);
   
   
+  manager.addAnim(new ToggleMoveAnim(&ftlmove, 100, 3*3*3*2));
+  manager.addAnim(new SnakeAnim(&snakeMovement2, 70, 7, 50));
+  manager.addAnim(blinkAnim);
+  manager.addAnim(new SnakeAnim(&snakeMovement1, 90, 4, 150));
   manager.addAnim(new StepsAnim(100,2));
-  //manager.addAnim(new SnakeAnim(&snakeMovement2, 70, 7, 100));
-  //manager.addAnim(blinkAnim);
-  //manager.addAnim(new SnakeAnim(&snakeMovement1, 70, 4, 100));
-  //manager.addAnim(blinkAnim);
-  //manager.addAnim(new MovesAnim(movesAnimMovables, 200, 10));
+  manager.addAnim(new MovesAnim(movesAnimMovables, 200, 150));
 }
 
 /** /

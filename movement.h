@@ -90,12 +90,12 @@ public:
   }
 };
 
-class PosMovement : public Movable {
+class CollectionMovement : public Movable {
   Collection<Position> *_positions;
   Iterator<Position> * _it;
   Position *_currentPos;
 public:
-  PosMovement(Collection<Position> * positions):
+  CollectionMovement(Collection<Position> * positions):
     _positions(positions),
     _it(_positions->ciclicalIterator()),
     _currentPos(&_it->next()) {}
@@ -109,14 +109,14 @@ public:
   }
 };
 
-class XYMovement : public PosMovement {
+class XYMovement : public CollectionMovement {
   Collection<Position> _positions;
   int _z;
   
 public:
   XYMovement(int index, int z=0):
     _positions(8),
-    PosMovement(&_positions),
+    CollectionMovement(&_positions),
     _z(z)
   {
     // init the positions collection
@@ -143,6 +143,54 @@ public:
     
     for(int i = 0; i < index; i++)
       move();
+  }
+};
+
+class FirstToLastMove : public CollectionMovement {
+  const int _n_leds_in_cube;
+  Collection<Position> _positions;
+public:
+  FirstToLastMove():
+    _n_leds_in_cube(3*3*3),
+    _positions(_n_leds_in_cube),
+    CollectionMovement(&_positions)
+  {
+    int i, j, x, y, z; // for indices
+    
+    // init the collection with (0,0,0) positions
+    Position auxPos(0,0,0);
+    for(i = 0; i < _n_leds_in_cube; i++)
+      _positions.add(auxPos);
+    
+    // init the x coordenates
+    for(x = 0, i = 0; x < 3; x++, i++)
+      _positions[i].x = x;
+    
+    for(j = 0; j < 4; j++) {
+      for(x = 2; x >= 0; x--, i++)
+       _positions[i].x = x;
+      
+      for(x = 0; x < 3; x++, i++)
+        _positions[i].x = x;
+    }
+    
+    // init the y coordinates
+    for(y = 0, i = 0; y < 3; y++)
+      for(j = 0; j < 3; j++, i++)
+        _positions[i].y = y;
+    
+    for(y = 2; y >= 0; y--)
+      for(j = 0; j < 3; j++, i++)
+        _positions[i].y = y;
+    
+    for(y = 0; y < 3; y++)
+      for(j = 0; j < 3; j++, i++)
+        _positions[i].y = y;
+    
+    // init the z coordinates
+    for(z = 0, i = 0; z < 3; z++)
+      for(j = 0; j < 9; j++, i++)
+        _positions[i].z = z;
   }
 };
 

@@ -119,6 +119,34 @@ class MovesAnim : public Animation, public WithDuration {
     }
 };
 
+class ToggleMoveAnim : public Animation, public WithDuration {
+  Movable * _movable;
+  const int _steps;
+public:
+  ToggleMoveAnim(Movable * movable, int duration, int steps):
+    WithDuration(duration),
+    _movable(movable),
+    _steps(steps) {}
+  
+  // Override
+  void animate(Cube & cube) {
+    cube.allOff();
+    
+    // hot fix - don't know why first position is bugged
+    Position origin(0,0,0);
+    cube.toggle(origin);
+    _movable->move();
+    
+    cube.render(duration());
+    for(int i = 0; i < _steps-1; i++) {
+      cube.toggle(_movable->pos());
+      cube.render(duration());
+      _movable->move();
+      
+    }
+  }
+};
+
 template<typename Item>
 class SnakeIterator {
     Collection<Item> * _collection;

@@ -1,7 +1,7 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include <Arduino.h> // digitalWrite, delay, delayMicroseconds
+#include <Arduino.h> // digitalWrite, delay, delayMicroseconds - Serial.print/println
 
 
 enum Direction { XMinus, XPlus, YMinus, YPlus, ZMinus, ZPlus }; 
@@ -45,6 +45,17 @@ bool operator==(const Position & p1, const Position & p2) {
   return p1.x == p2.x && p1.y == p2.y && p1.z == p2.z;
 }
 
+void printPos(Position & pos) {
+  Serial.print("(");
+  Serial.print(pos.x);
+  Serial.print(",");
+  Serial.print(pos.y);
+  Serial.print(",");
+  Serial.print(pos.z);
+  Serial.println(")");
+  Serial.flush();
+}
+
 class Cube {
   bool _leds[3][9];
   
@@ -57,6 +68,14 @@ class Cube {
   }
   
   bool & led(int x, int y, int z) {
+    /** /
+    if(x>2) x = 2;
+    if(x<0) x = 0;
+    if(y>2) y = 2;
+    if(y<0) y = 0;
+    if(z>2) z = 2;
+    if(z<0) z = 0;
+    /**/
     return _leds[z][3*y+x];
   }
   

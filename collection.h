@@ -23,10 +23,12 @@ public:
   
   
   inline Item & operator[](int i) {
-    return _items[i];
+    return get(i);
   }
   
   inline Item & get(int i) {
+    if(i > _nElems - 1)
+      i = _nElems;
     return _items[i];
   }
   
