@@ -7,6 +7,11 @@ RandomArestaMovement snakeMovement2(9898);
 RandomAllDirMovement moveAnimMove(6767);
 XYMovement planeMove(0,0);
 
+RandomAllDirMovement randMove1(2323);
+RandomAllDirMovement randMove2(2424);
+RandomAllDirMovement randMove3(9527);
+RandomAllDirMovement randMove4(7);
+
 void setup() {
   /**/
   Serial.begin(9600);
@@ -35,10 +40,24 @@ void setup() {
   RepeatAnim * blinkAnim = new RepeatAnim(3,blinkSeq);
   
   
-  manager.addAnim(new StepsAnim(100,2));
-  manager.addAnim(new SnakeAnim(&snakeMovement2, 70, 7, 100));
-  manager.addAnim(blinkAnim);
-  manager.addAnim(new SnakeAnim(&snakeMovement1, 70, 4, 100));
+
+  Collection<Movable*> * movesAnimMovables = new Collection<Movable*>(4);
+  randMove1.pos(1,1,1);
+  randMove2.pos(1,1,1);
+  randMove3.pos(1,1,1);
+  randMove4.pos(1,1,1);
+  movesAnimMovables->add(&randMove1);
+  movesAnimMovables->add(&randMove2);
+  movesAnimMovables->add(&randMove3);
+  movesAnimMovables->add(&randMove4);
+  
+  
+  //manager.addAnim(new StepsAnim(100,2));
+  //manager.addAnim(new SnakeAnim(&snakeMovement2, 70, 7, 100));
+  //manager.addAnim(blinkAnim);
+  //manager.addAnim(new SnakeAnim(&snakeMovement1, 70, 4, 100));
+  //manager.addAnim(blinkAnim);
+  manager.addAnim(new MovesAnim(movesAnimMovables, 200, 10));
 }
 
 /** /

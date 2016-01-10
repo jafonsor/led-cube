@@ -73,6 +73,11 @@ public:
     if(!pos.outsideCube())
       _pos = pos;
   }
+  
+  void pos(int x, int y, int z) {
+    Position newPos(x,y,z);
+    pos(newPos);
+  }
 };
 
 class AheadMovement : public Movement {

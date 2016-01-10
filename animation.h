@@ -85,81 +85,37 @@ class RepeatAnim : public Animation {
     }
 };
 
-class MoveAnim : public Animation, public WithDuration {
-    Movable * _movable;
+class MovesAnim : public Animation, public WithDuration {
+    Collection<Movable*> * _movables;
     const int _num_of_steps;
   public:
-    MoveAnim(Movable * movable, int duration, int num_of_steps) :
+    MovesAnim(Collection<Movable*> * movables, int duration, int num_of_steps) :
       WithDuration(duration),
-      _movable(movable),
+      _movables(movables),
       _num_of_steps(num_of_steps) {}
 
     void animate(Cube & cube) {
       cube.allOff();
       
-      cube.on(_movable->pos());
-      cube.render(duration());
-      cube.off(_movable->pos());
+      Iterator<Movable*> * it;
+      Movable * movableAux;
       for (int i = 0; i < _num_of_steps; i++) {
-        _movable->move();
-        cube.on(_movable->pos());
+        it = _movables->iterator();
+        while(it->hasNext()) {
+          cube.on(it->next()->pos());
+        }
+        delete it;
+        
         cube.render(duration());
-        cube.off(_movable->pos());
-      }
-    }
-};
-
-class ArestaMov : public Animation, public WithDuration {
-    AheadMovement _xMov;
-    AheadMovement _yMov;
-    AheadMovement _zMov;
-
-    void moveAllAndRender(Cube & cube) {
-      cube.off(_xMov.pos());
-      _xMov.move();
-      cube.on(_xMov.pos());
-
-      cube.off(_yMov.pos());
-      _yMov.move();
-      cube.on(_yMov.pos());
-
-      cube.off(_zMov.pos());
-      _zMov.move();
-      cube.on(_zMov.pos());
-
-      cube.render(duration());
-    }
-  public:
-    ArestaMov(int duration) :
-      WithDuration(duration),
-      _xMov(0, 0, 0, XPlus),
-      _yMov(0, 0, 0, YPlus),
-      _zMov(0, 0, 0, ZPlus) {}
-
-    void animate(Cube & cube) {
-      cube.allOff();
-      cube.on(0, 0, 0);
-      cube.render(duration());
-
-      for (int i = 0; i < 2; i++) {
-        moveAllAndRender(cube);
-      }
       
-
-      /** /
-      // redirect movements
-      _xMov.setDir(0);
-      _yMov.setDir(2);
-      _zMov.setDir(4);
-
-      for(int i = 0; i < 1; i++)
-        moveAllAndRender(cube);
-      /**/
-
-      // reset for next round
-      _xMov.set(0, 0, 0, XPlus);
-      _yMov.set(0, 0, 0, YPlus);
-      _zMov.set(0, 0, 0, ZPlus);
+        it = _movables->iterator();
+        while(it->hasNext()) {
+          movableAux = it->next();
+          cube.off(movableAux->pos());
+          movableAux->move();
+        }
+        delete it;
+      }
     }
 };
 
@@ -241,58 +197,6 @@ class SnakeAnim : public Animation, public WithDuration {
     }
 };
 
-class MoveTestAnim : public Animation, public WithDuration {
-    AheadMovement _movement;
-  public:
-    MoveTestAnim(int duration):
-      WithDuration(duration),
-      _movement(0, 0, 0, XMinus) {}
-      
-    void animate(Cube & cube) {
-      cube.allOff();
-      cube.on(1,1,1);
-      cube.render(duration());
-      
-      for (int i = 0; i < 6; i++) {
-        _movement.set(1, 1, 1, (Direction)i);
-        _movement.move();
-        cube.on(_movement.pos());
-        cube.render(duration());
-        cube.off(_movement.pos());
-      }
-    }
-};
-
-class MoveTestAnim2 : public Animation, public WithDuration {
-  AheadMovement _movement;
-public:
-  MoveTestAnim2(int duration):
-    WithDuration(duration),
-    _movement(0, 0, 0, XPlus) {}
-    
-  void animate(Cube & cube) {
-    cube.allOff();
-    cube.on(_movement.pos());
-    cube.render(duration());
-    
-    for(int i = 0; i < 2; i++) {
-      cube.off(_movement.pos());
-      _movement.move();
-      cube.on(_movement.pos());
-      cube.render(duration());
-    }
-    
-    _movement.setDir(YPlus);
-    
-    for(int i = 0; i < 2; i++) {
-      cube.off(_movement.pos());
-      _movement.move();
-      cube.on(_movement.pos());
-      cube.render(duration());
-    }
-  }
-};
-
 class StepsAnim : public Animation, public WithDuration {
   XYMovement _top;
   XYMovement _midle;
@@ -319,6 +223,28 @@ public:
       _bottom.move();
     }
   }
+};
+
+class MoveTestAnim : public Animation, public WithDuration {
+    AheadMovement _movement;
+  public:
+    MoveTestAnim(int duration):
+      WithDuration(duration),
+      _movement(0, 0, 0, XMinus) {}
+      
+    void animate(Cube & cube) {
+      cube.allOff();
+      cube.on(1,1,1);
+      cube.render(duration());
+      
+      for (int i = 0; i < 6; i++) {
+        _movement.set(1, 1, 1, (Direction)i);
+        _movement.move();
+        cube.on(_movement.pos());
+        cube.render(duration());
+        cube.off(_movement.pos());
+      }
+    }
 };
 
 

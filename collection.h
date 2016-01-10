@@ -36,7 +36,7 @@ public:
   
   inline int nElems() { return _nElems; }
 
-  bool add(Item & item) {
+  bool add(Item item) {
     if(_nElems < _max_elems) {
       _items[_nElems] = item; // copy
       _nElems++;
